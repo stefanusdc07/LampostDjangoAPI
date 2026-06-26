@@ -8,8 +8,6 @@ class Category(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     
 
-
-
  #set nama tabel
 class Meta:
     db_table='category'
@@ -17,6 +15,12 @@ class Meta:
 
 def __str__(self):
     return self.name
+
+#Custom manager untuk newsmodel
+class NewsManager(models.Manager):
+    def is_published(self):
+        return super().get_queryset().filter(status = News.NewsStatus.published)
+    
 
 #model untuk tabel news
 class News(models.Model):
@@ -31,6 +35,7 @@ class News(models.Model):
     published_at = models.DateTimeField(null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    objects = NewsManager()
 
 #set relasi ke tabel user dan category
     user = models.ForeignKey(User, on_delete=models.CASCADE)
