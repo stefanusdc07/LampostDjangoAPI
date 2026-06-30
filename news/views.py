@@ -3,6 +3,8 @@ from django.http import Http404
 from rest_framework.filters import SearchFilter, OrderingFilter
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.generics import ListAPIView, RetrieveAPIView, CreateAPIView
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.permissions import IsAuthenticated
 
 #import category model & class serializers untuk model Category
 from .models import Category, News, Comment
@@ -25,12 +27,17 @@ class CategoryListView(ListAPIView):
     search_fields = ['name']
     ordering_fields = ['name', 'created_at']
     ordering = ['created_at']
+    #authentication
+    permission_classes = (IsAuthenticated,)
+    authentication_classes  = [TokenAuthentication]
     
 
 #Membuat view API ENDPOINT /api/category/:id
 class CategoryDetailView(RetrieveAPIView):
     serializer_class = CategoryDetailSerializer
     queryset = Category.objects.all()
+    permission_classes = (IsAuthenticated,)
+    authentication_classes  = [TokenAuthentication]
     
 #Membuat view Get list news
 #/api/news
@@ -47,16 +54,22 @@ class NewsListView(ListAPIView):
     search_fields = ['title']
     ordering_fields= ['title', 'created_at']
     ordering = ['created_at']
+    permission_classes = (IsAuthenticated,)
+    authentication_classes  = [TokenAuthentication]
     
 #View get detail news
 class NewsDetailView(RetrieveAPIView):
     serializer_class = NewsDetailSerializer
     queryset = News.objects.is_published()
+    permission_classes = (IsAuthenticated,)
+    authentication_classes  = [TokenAuthentication]
     
 #View comment on news
 class NewsCreateCommentView(CreateAPIView):
     serializer_class = CommentFormSerializer
     queryset = Comment.objects.all()
+    permission_classes = (IsAuthenticated,)
+    authentication_classes  = [TokenAuthentication]
     
     def perform_create(self, serializer):
         news_id = self.kwargs['pk']
